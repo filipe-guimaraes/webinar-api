@@ -22,15 +22,20 @@ jobs:
           aws-region: ${{vars.AWS_REGION}}
 
       - name: Build & Push To ECR
+        env:
+          COMMIT_TAG: ${{ github.sha }}
+
         run: |
+          
           aws ecr get-login-password --region ${{vars.AWS_REGION}} | docker login --username AWS --password-stdin ${{vars.ECR_URI}}
-          docker build -t api .
-          docker tag api:latest ${{vars.ECR_IMAGE_URI_LATEST}}
-          docker push ${{vars.ECR_IMAGE_URI_LATEST}}
-      
-      # - name: Update ECS Service
-      #   run: |
-      #     aws ecs update-service --cluster ${{vars.ECS_CLUSTER_NAME}} --service ${{vars.ECS_SERVICE_NAME}} --force-new-deployment
+          
+          docker build -t ${{ vars.PROJECT_NAME }} .
+          
+          docker tag ${{ vars.PROJECT_NAME }}:latest ${{vars.ECR_IMAGE_URI}}:latest
+          docker tag ${{ vars.PROJECT_NAME }}:latest ${{vars.ECR_IMAGE_URI}}:${COMMIT_TAG}
+
+          docker push ${{ vars.ECR_IMAGE_URI }}:latest
+          docker push ${{vars.ECR_IMAGE_URI}}:${COMMIT_TAG}
       
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
