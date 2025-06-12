@@ -37,7 +37,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: ./task-definition.json
-          container-name: frontend
+          container-name: ${{ vars.PROJECT_NAME }}
           image: ${{ vars.ECR_IMAGE_URI_LATEST }}
 
       - name: Deploy Amazon ECS task definition
