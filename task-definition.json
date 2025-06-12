@@ -1,0 +1,85 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:sa-east-1:388767684509:task-definition/addvalue-webinar-api",
+    "containerDefinitions": [
+        {
+            "name": "addvalue-webinar-api",
+            "image": "388767684509.dkr.ecr.sa-east-1.amazonaws.com/addvalue-webinar-api",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/addvalue-webinar-api",
+                    "awslogs-region": "sa-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            },
+            "systemControls": []
+        }
+    ],
+    "family": "addvalue-webinar-api",
+    "taskRoleArn": "arn:aws:iam::388767684509:role/ecs-task-execution-role-addvalue-webinar-api",
+    "executionRoleArn": "arn:aws:iam::388767684509:role/ecs-task-execution-role-addvalue-webinar-api",
+    "networkMode": "awsvpc",
+    "revision": 1,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "2048",
+    "registeredAt": "2025-06-12T04:40:52.294Z",
+    "registeredBy": "arn:aws:iam::388767684509:user/webinar-devops",
+    "tags": [
+        {
+            "key": "Environment",
+            "value": "Prod"
+        },
+        {
+            "key": "Produto",
+            "value": "Webinar-DevOps"
+        }
+    ]
+}
