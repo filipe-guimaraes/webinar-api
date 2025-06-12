@@ -1,0 +1,49 @@
+name: Deploy API
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+
+jobs:
+  frontend_build:
+    name: Build Frontend on ECR
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checking Code Out
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-region: ${{vars.AWS_REGION}}
+
+      - name: Build & Push To ECR
+        run: |
+          aws ecr get-login-password --region ${{vars.AWS_REGION}} | docker login --username AWS --password-stdin ${{vars.ECR_URI}}
+          docker build -t api .
+          docker tag ${{vars.PROJECT_NAME}}:latest ${{vars.ECR_IMAGE_URI_LATEST}}
+          docker push ${{vars.ECR_IMAGE_URI_LATEST}}
+      
+      # - name: Update ECS Service
+      #   run: |
+      #     aws ecs update-service --cluster ${{vars.ECS_CLUSTER_NAME}} --service ${{vars.ECS_SERVICE_NAME}} --force-new-deployment
+      
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ./task-definition.json
+          container-name: frontend
+          image: ${{ vars.ECR_IMAGE_URI_LATEST }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ vars.ECS_SERVICE_NAME }}
+          cluster: ${{ vars.ECS_CLUSTER_NAME }}
+          wait-for-service-stability: true
