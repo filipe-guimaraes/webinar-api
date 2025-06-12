@@ -25,7 +25,7 @@ jobs:
         run: |
           aws ecr get-login-password --region ${{vars.AWS_REGION}} | docker login --username AWS --password-stdin ${{vars.ECR_URI}}
           docker build -t api .
-          docker tag ${{vars.PROJECT_NAME}}:latest ${{vars.ECR_IMAGE_URI_LATEST}}
+          docker tag api:latest ${{vars.ECR_IMAGE_URI_LATEST}}
           docker push ${{vars.ECR_IMAGE_URI_LATEST}}
       
       # - name: Update ECS Service
